@@ -31,6 +31,7 @@ namespace ThirdParty.npg.bindlessdi
 		{
 			_constructionInfoProvider?.Dispose();
 			_unityEventsHandler?.Dispose();
+			_instantiator?.Dispose();
 		}
 
 		public object Resolve(Type type)
