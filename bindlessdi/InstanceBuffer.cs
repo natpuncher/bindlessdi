@@ -1,0 +1,21 @@
+using System;
+using System.Collections.Generic;
+
+namespace ThirdParty.npg.bindlessdi
+{
+	internal class InstanceBuffer : IDisposable
+	{
+		private List<object> _instances = new();
+		public List<object> Instances => _instances;
+
+		public void Add(object instance)
+		{
+			_instances.Add(instance);
+		}
+
+		public void Dispose()
+		{
+			_instances.Clear();
+		}
+	}
+}
