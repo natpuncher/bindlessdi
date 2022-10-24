@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class Instantiator : IDisposable
+	internal sealed class Instantiator : IDisposable
 	{
 		private Dictionary<int, object[]> _cache = new();
 

@@ -1,6 +1,6 @@
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class Factory<TType> : IFactory<TType> where TType : class
+	internal sealed class Factory<TType> : IFactory<TType> where TType : class
 	{
 		private readonly Resolver _resolver;
 

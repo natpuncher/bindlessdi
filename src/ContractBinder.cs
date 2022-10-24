@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class ContractBinder : IDisposable
+	internal sealed class ContractBinder : IDisposable
 	{
 		private readonly Dictionary<Type, Type> _bindings = new();
 

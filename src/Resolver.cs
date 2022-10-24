@@ -2,16 +2,14 @@ using System;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class Resolver : IDisposable
+	internal sealed class Resolver : IDisposable
 	{
-		private readonly Instantiator _instantiator = new();
-
 		private readonly InstantiationPolicyRegistry _instantiationPolicyRegistry;
 		private readonly ContractBinder _contractBinder;
 		private readonly ConstructionInfoProvider _constructionInfoProvider;
 		private readonly InstanceCache _instanceCache;
 		private readonly UnityEventsHandler _unityEventsHandler;
-
+		private readonly Instantiator _instantiator = new();
 		private readonly Pool<InstanceBuffer> _instanceBufferPool = new();
 
 		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache,
@@ -85,9 +83,9 @@ namespace ThirdParty.npg.bindlessdi
 			}
 			
 			var buffer = _instanceBufferPool.Get();
-			foreach (var dependencyType in info.Dependencies)
+			foreach (var dependencyInfo in info.Dependencies)
 			{
-				buffer.Add(Resolve(dependencyType));
+				buffer.Add(Resolve(dependencyInfo.TargetType));
 			}
 
 			var result = _instantiator.Construct(info, buffer);

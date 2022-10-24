@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ThirdParty.npg.bindlessdi
 {
 	[AddComponentMenu("")]
-	internal class UnityEventsListener : MonoBehaviour
+	internal sealed class UnityEventsListener : MonoBehaviour
 	{
 		internal Action OnDestroyed;
 		internal Action OnFixUpdated;
