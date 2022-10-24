@@ -7,15 +7,12 @@ namespace ThirdParty.npg.bindlessdi
 	{
 		private readonly Dictionary<Type, Type> _bindings = new();
 
-		public void Bind<TInterface, TType>()
+		public void Bind<TContract, TTarget>()
 		{
-			var bindType = typeof(TInterface);
-			var resultType = typeof(TType);
-
-			_bindings[bindType] = resultType;
+			_bindings[typeof(TContract)] = typeof(TTarget);
 		}
 
-		public bool TryGetImplementation(Type bindType, out Type resultType)
+		public bool TryGetTargetType(Type bindType, out Type resultType)
 		{
 			return _bindings.TryGetValue(bindType, out resultType);
 		}

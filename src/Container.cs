@@ -28,7 +28,6 @@ namespace ThirdParty.npg.bindlessdi
 				_instance = new Container(handleUnityEvents);
 				_instance.BindInstance(_instance._unityObjectContainer);
 				_instance.BindInstance(_instance._resolver);
-				_instance.RegisterInstantiationPolicy<Container>(InstantiationPolicy.Single);
 			}
 
 			return _instance;

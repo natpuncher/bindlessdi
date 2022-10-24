@@ -8,13 +8,13 @@ namespace ThirdParty.npg.bindlessdi
 	{
 		public Type TargetType { get; }
 		public ConstructorInfo ConstructorInfo { get; }
-		public List<ConstructionInfo> Dependencies { get; }
+		public List<Type> Dependencies { get; }
 
 		public ConstructionInfo(Type targetType, ConstructorInfo constructorInfo)
 		{
 			TargetType = targetType;
 			ConstructorInfo = constructorInfo;
-			Dependencies = new List<ConstructionInfo>();
+			Dependencies = new List<Type>();
 		}
 	}
 }
