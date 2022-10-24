@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class InstanceCache : IDisposable
+	internal sealed class InstanceCache : IDisposable
 	{
 		private readonly Dictionary<Type, object> _instances = new();
 

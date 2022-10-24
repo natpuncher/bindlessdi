@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class ConstructionValidator : IDisposable
+	internal sealed class ConstructionValidator : IDisposable
 	{
 		private static readonly Type ContainerType = typeof(Container);
 		
 		private readonly Dictionary<Type, bool> _typeValidity = new();
-
+		
 		public bool IsTypeValid(Type type)
 		{
 			if (!_typeValidity.TryGetValue(type, out var isValid))

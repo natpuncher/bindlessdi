@@ -9,7 +9,7 @@ namespace ThirdParty.npg.bindlessdi
 	{
 		private readonly Dictionary<Type, Object> _data = new();
 
-		private List<Type> _buffer = new();
+		private List<Type> _buffer = new(32);
 
 		public UnityObjectContainer()
 		{

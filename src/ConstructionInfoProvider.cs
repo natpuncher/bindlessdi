@@ -5,67 +5,72 @@ using UnityEngine;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class ConstructionInfoProvider : IDisposable
+	internal sealed class ConstructionInfoProvider : IDisposable
 	{
 		private readonly ConstructionValidator _constructionValidator = new();
 		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new();
 		private readonly FactoryTypeResolver _factoryTypeResolver = new();
-		
-		private readonly ContractBinder _contractBinder;
-
-		public ConstructionInfoProvider(ContractBinder contractBinder)
-		{
-			_contractBinder = contractBinder;
-		}
+		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new();
 
 		public bool TryGetInfo(Type type, out ConstructionInfo info)
 		{
+			_circularDependencyAnalyzer.Dispose();
+			return TryGetInfoInternal(type, out info);
+		}
+
+		private bool TryGetInfoInternal(Type type, out ConstructionInfo info)
+		{
 			if (!_instantiationInfos.TryGetValue(type, out info))
 			{
+				if (!_circularDependencyAnalyzer.Validate(type))
+				{
+					Debug.LogError($"[bindlessdi] Circular dependency found!\n{_circularDependencyAnalyzer}");
+					info = null;
+					return false;
+				}
+				
 				info = CreateInstantiationInfo(type);
 				if (info == null)
 				{
 					return false;
 				}
-				
+
 				_instantiationInfos[type] = info;
+				_circularDependencyAnalyzer.ReleaseLast();
 			}
 
 			return true;
 		}
-		
+
 		public void Dispose()
 		{
 			_instantiationInfos?.Clear();
 			_constructionValidator?.Dispose();
+			_circularDependencyAnalyzer?.Dispose();
 		}
 
 		private ConstructionInfo CreateInstantiationInfo(Type type)
 		{
-			if (!_contractBinder.TryGetImplementation(type, out var resolveType))
+			var targetType = type;
+			if (_factoryTypeResolver.TryResolve(targetType, out var factoryType))
 			{
-				resolveType = type;
+				targetType = factoryType;
 			}
 
-			if (_factoryTypeResolver.TryResolve(resolveType, out var factoryType))
+			if (!_constructionValidator.IsTypeValid(targetType))
 			{
-				resolveType = factoryType;
-			}
-
-			if (!_constructionValidator.IsTypeValid(resolveType))
-			{
-				Debug.LogError($"Can't create instantiation info for {resolveType.FullName}: type is invalid");
+				Debug.LogError($"[bindlessdi] Can't create instantiation info for {targetType.FullName}: type is invalid");
 				return null;
 			}
-			
-			var constructor = _constructionValidator.GetValidConstructor(resolveType);
+
+			var constructor = _constructionValidator.GetValidConstructor(targetType);
 			if (constructor == null)
 			{
-				Debug.LogError($"Can't create instantiation info for {resolveType.FullName}: no valid constructor found");
+				Debug.LogError($"[bindlessdi] Can't create instantiation info for {targetType.FullName}: no valid constructor found");
 				return null;
 			}
 
-			var info = new ConstructionInfo(resolveType, constructor);
+			var info = new ConstructionInfo(targetType, constructor);
 			if (!TryProcessParameters(constructor, info))
 			{
 				return null;
@@ -76,14 +81,12 @@ namespace ThirdParty.npg.bindlessdi
 
 		private bool TryProcessParameters(ConstructorInfo constructor, ConstructionInfo info)
 		{
-			// todo add circular dependency check
-			// todo add container check
 			var parameters = constructor.GetParameters();
 			var length = parameters.Length;
 			for (var index = 0; index < length; index++)
 			{
 				var parameter = parameters[index];
-				if (!TryGetInfo(parameter.ParameterType, out var dependencyInfo))
+				if (!TryGetInfoInternal(parameter.ParameterType, out var dependencyInfo))
 				{
 					return false;
 				}

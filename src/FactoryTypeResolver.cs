@@ -2,7 +2,7 @@ using System;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class FactoryTypeResolver
+	internal sealed class FactoryTypeResolver
 	{
 		private static readonly Type FactoryInterfaceType = typeof(IFactory<>);
 		private static readonly Type FactoryType = typeof(Factory<>);

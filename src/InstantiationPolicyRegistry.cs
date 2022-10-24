@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class InstantiationPolicyRegistry : IDisposable
+	internal sealed class InstantiationPolicyRegistry : IDisposable
 	{
 		internal InstantiationPolicy DefaultPolicy = InstantiationPolicy.Single;
 		

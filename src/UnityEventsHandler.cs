@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class UnityEventsHandler : IDisposable
+	internal sealed class UnityEventsHandler : IDisposable
 	{
 		private readonly List<IFixedTickable> _fixTickables = new();
 		private readonly List<ITickable> _tickables = new();

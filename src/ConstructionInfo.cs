@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace ThirdParty.npg.bindlessdi
 {
-	internal class ConstructionInfo
+	internal sealed class ConstructionInfo
 	{
 		public Type TargetType { get; }
 		public ConstructorInfo ConstructorInfo { get; }
