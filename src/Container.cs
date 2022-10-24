@@ -21,11 +21,11 @@ namespace ThirdParty.npg.bindlessdi
 		
 		private static Container _instance;
 
-		public static Container Initialize()
+		public static Container Initialize(bool handleUnityEvents = true)
 		{
 			if (_instance == null)
 			{
-				_instance = new Container();
+				_instance = new Container(handleUnityEvents);
 				_instance.BindInstance(_instance._unityObjectContainer);
 				_instance.BindInstance(_instance._resolver);
 				_instance.RegisterInstantiationPolicy<Container>(InstantiationPolicy.Single);
@@ -34,12 +34,12 @@ namespace ThirdParty.npg.bindlessdi
 			return _instance;
 		}
 
-		private Container()
+		private Container(bool handleUnityEvents)
 		{
 			_instantiationPolicyRegistry = new InstantiationPolicyRegistry();
 			_contractBinder = new ContractBinder();
 			_instanceCache = new InstanceCache();
-			_resolver = new Resolver(_instantiationPolicyRegistry, _contractBinder, _instanceCache);
+			_resolver = new Resolver(_instantiationPolicyRegistry, _contractBinder, _instanceCache, handleUnityEvents);
 			_unityObjectContainer = new UnityObjectContainer();
 		}
 

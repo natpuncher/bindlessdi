@@ -13,12 +13,16 @@ namespace ThirdParty.npg.bindlessdi
 
 		private readonly Pool<InstanceBuffer> _instanceBufferPool = new();
 
-		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache)
+		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache,
+			bool handleUnityEvents)
 		{
 			_instantiationPolicyRegistry = instantiationPolicyRegistry;
 			_instanceCache = instanceCache;
 			_constructionInfoProvider = new ConstructionInfoProvider(contractBinder);
-			_unityEventsHandler = new UnityEventsHandler();
+			if (handleUnityEvents)
+			{
+				_unityEventsHandler = new UnityEventsHandler();
+			}
 		}
 		
 		public void Dispose()
@@ -78,7 +82,7 @@ namespace ThirdParty.npg.bindlessdi
 			}
 			
 			var result = _instantiator.Construct(info, buffer);
-			_unityEventsHandler.TryRegisterInstance(result);
+			_unityEventsHandler?.TryRegisterInstance(result);
 			_instanceBufferPool.Return(buffer);
 			return result;
 		}
