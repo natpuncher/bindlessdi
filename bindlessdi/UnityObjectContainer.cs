@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
+
+namespace ThirdParty.npg.bindlessdi
+{
+	public class UnityObjectContainer : IDisposable
+	{
+		private readonly Dictionary<Type, Object> _data = new();
+
+		private List<Type> _buffer = new();
+
+		public UnityObjectContainer()
+		{
+			SceneManager.sceneLoaded += OnSceneLoaded;
+		}
+
+		public void Bind(Object data)
+		{
+			var type = data.GetType();
+			_data[type] = data;
+		}
+		
+		public bool TryGetObject<TObject>(out TObject data) where TObject : Object
+		{
+			var type = typeof(TObject);
+			if (_data.TryGetValue(type, out var result))
+			{
+				data = (TObject)result;
+				return true;
+			}
+
+			data = null;
+			return false;
+		}
+
+		public void Dispose()
+		{
+			SceneManager.sceneLoaded += OnSceneLoaded;
+			_data.Clear();
+		}
+
+		private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+		{
+			foreach (var gameObject in scene.GetRootGameObjects())
+			{
+				var sceneContext = gameObject.GetComponent<SceneContext>();
+				if (sceneContext == null)
+				{
+					continue;
+				}
+
+				BindSceneContext(sceneContext);
+			}
+			
+			CleanUnused();
+		}
+
+		private void BindSceneContext(SceneContext sceneContext)
+		{
+			foreach (var data in sceneContext.GetObjects())
+			{
+				Bind(data);
+			}
+		}
+
+		private void CleanUnused()
+		{
+			_buffer.Clear();
+			foreach (var dataPair in _data)
+			{
+				if (dataPair.Value == null)
+				{
+					_buffer.Add(dataPair.Key);
+				}
+			}
+
+			foreach (var type in _buffer)
+			{
+				_data.Remove(type);
+			}
+			_buffer.Clear();
+		}
+	}
+}
