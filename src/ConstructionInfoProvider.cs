@@ -7,10 +7,16 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class ConstructionInfoProvider : IDisposable
 	{
+		private readonly InstanceCache _instanceCache;
 		private readonly ConstructionValidator _constructionValidator = new();
 		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new();
 		private readonly FactoryTypeResolver _factoryTypeResolver = new();
 		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new();
+
+		public ConstructionInfoProvider(InstanceCache instanceCache)
+		{
+			_instanceCache = instanceCache;
+		}
 
 		public bool TryGetInfo(Type type, out ConstructionInfo info)
 		{
@@ -71,9 +77,13 @@ namespace ThirdParty.npg.bindlessdi
 			}
 
 			var info = new ConstructionInfo(targetType, constructor);
-			if (!TryProcessParameters(constructor, info))
+			var hasInstance = _instanceCache.TryGetInstance(targetType, out _);
+			if (!hasInstance)
 			{
-				return null;
+				if (!TryProcessParameters(constructor, info))
+				{
+					return null;
+				}
 			}
 
 			return info;
