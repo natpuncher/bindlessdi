@@ -18,7 +18,7 @@ namespace ThirdParty.npg.bindlessdi
 			_instantiationPolicyRegistry = instantiationPolicyRegistry;
 			_contractBinder = contractBinder;
 			_instanceCache = instanceCache;
-			_constructionInfoProvider = new ConstructionInfoProvider();
+			_constructionInfoProvider = new ConstructionInfoProvider(_instanceCache);
 			if (handleUnityEvents)
 			{
 				_unityEventsHandler = new UnityEventsHandler();
