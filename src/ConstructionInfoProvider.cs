@@ -7,10 +7,18 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class ConstructionInfoProvider : IDisposable
 	{
+		private readonly InstanceCache _instanceCache;
+		private readonly ContractBinder _contractBinder;
 		private readonly ConstructionValidator _constructionValidator = new();
 		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new();
 		private readonly FactoryTypeResolver _factoryTypeResolver = new();
 		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new();
+
+		public ConstructionInfoProvider(InstanceCache instanceCache, ContractBinder contractBinder)
+		{
+			_instanceCache = instanceCache;
+			_contractBinder = contractBinder;
+		}
 
 		public bool TryGetInfo(Type type, out ConstructionInfo info)
 		{
@@ -51,7 +59,11 @@ namespace ThirdParty.npg.bindlessdi
 
 		private ConstructionInfo CreateInstantiationInfo(Type type)
 		{
-			var targetType = type;
+			if (!_contractBinder.TryGetTargetType(type, out var targetType))
+			{
+				targetType = type;
+			}
+			
 			if (_factoryTypeResolver.TryResolve(targetType, out var factoryType))
 			{
 				targetType = factoryType;
@@ -71,9 +83,13 @@ namespace ThirdParty.npg.bindlessdi
 			}
 
 			var info = new ConstructionInfo(targetType, constructor);
-			if (!TryProcessParameters(constructor, info))
+			var hasInstance = _instanceCache.TryGetInstance(targetType, out _);
+			if (!hasInstance)
 			{
-				return null;
+				if (!TryProcessParameters(constructor, info))
+				{
+					return null;
+				}
 			}
 
 			return info;
