@@ -14,6 +14,7 @@ namespace ThirdParty.npg.bindlessdi
 		public UnityObjectContainer()
 		{
 			SceneManager.sceneLoaded += OnSceneLoaded;
+			ProcessScene(SceneManager.GetActiveScene());
 		}
 
 		public void Bind(Object data)
@@ -37,11 +38,16 @@ namespace ThirdParty.npg.bindlessdi
 
 		public void Dispose()
 		{
-			SceneManager.sceneLoaded += OnSceneLoaded;
+			SceneManager.sceneLoaded -= OnSceneLoaded;
 			_data.Clear();
 		}
 
 		private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+		{
+			ProcessScene(scene);
+		}
+
+		private void ProcessScene(Scene scene)
 		{
 			foreach (var gameObject in scene.GetRootGameObjects())
 			{
