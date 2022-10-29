@@ -51,6 +51,11 @@ namespace ThirdParty.npg.bindlessdi
 
 		public void BindInstance<TType>(TType instance)
 		{
+			if (instance == null)
+			{
+				return;
+			}
+			
 			_instanceCache.AddInstance(typeof(TType), instance);
 		}
 
@@ -58,6 +63,11 @@ namespace ThirdParty.npg.bindlessdi
 		{
 			foreach (var instance in instances)
 			{
+				if (instance == null)
+				{
+					continue;
+				}
+				
 				_instanceCache.AddInstance(instance.GetType(), instance);
 			}
 		}
