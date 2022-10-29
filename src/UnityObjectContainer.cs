@@ -19,6 +19,11 @@ namespace ThirdParty.npg.bindlessdi
 
 		public void Bind(Object data)
 		{
+			if (data == null)
+			{
+				return;
+			}
+			
 			var type = data.GetType();
 			_data[type] = data;
 		}
