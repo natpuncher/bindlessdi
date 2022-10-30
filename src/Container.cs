@@ -11,8 +11,6 @@ namespace ThirdParty.npg.bindlessdi
 		private readonly InstantiationPolicyRegistry _instantiationPolicyRegistry;
 		private readonly UnityObjectContainer _unityObjectContainer;
 
-		public UnityObjectContainer UnityObjectContainer => _unityObjectContainer;
-
 		public InstantiationPolicy DefaultInstantiationPolicy
 		{
 			get => _instantiationPolicyRegistry.DefaultPolicy;
