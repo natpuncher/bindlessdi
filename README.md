@@ -8,7 +8,8 @@ bindlessdi
 
 Lightweight dependency injection framework for Unity almost free of bindings.
 
-[Installation](#installation) | [Usage](#usage)
+ * [Installation](#installation) 
+ * [Usage](#usage)
 
 ## Installation
 
@@ -23,7 +24,8 @@ Find the `manifest.json` file in the Packages folder of your project and add the
 
 ## Usage
 
-[Initializing](#initializing-the-container) | [GameObjects from scene](#getting-links-to-gameobjects-from-scene)
+ * [Initializing](#initializing-the-container) 
+ * [GameObjects from scene](#getting-links-to-gameobjects-from-scene)
 
 ### Initializing the Container
 Call `Container.Initialize()` once your first scene will be loaded
@@ -77,4 +79,4 @@ public class MyGame
     }
 }
 ```
- - Once a scene will be loaded - every monoBehaviour from SceneContexts will be added to UnityObjectContainer
+ - Once a scene will be loaded - every MonoBehaviour you return from `GetObjects` method of `SceneContexts` will be added to `UnityObjectContainer`
