@@ -1,7 +1,7 @@
 ![](https://img.shields.io/badge/unity-2019.3%20or%20later-green)
 [![](https://img.shields.io/github/license/no0bsprey/bindlessdi)](https://github.com/mob-sakai/UIEffect/blob/master/LICENSE.txt)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=flat-square)](https://makeapullrequest.com)
-![](https://img.shields.io/github/stars/no0bsprey/bindlessdi?style=social)
+[![](https://img.shields.io/github/stars/no0bsprey/bindlessdi?style=social)](https://github.com/no0bsprey/bindlessdi/)
 
 bindlessdi
 ===
@@ -12,7 +12,7 @@ Lightweight dependency injection framework for Unity almost free of bindings.
 
 ## Installation
 
-Find the manifest.json file in the Packages folder of your project and add the followng line to dependencies section:
+Find the `manifest.json` file in the Packages folder of your project and add the followng line to dependencies section:
 ```json
 {
  "dependencies": {
@@ -23,8 +23,10 @@ Find the manifest.json file in the Packages folder of your project and add the f
 
 ## Usage
 
+[Initializing](#initializing-the-container) | [GameObjects from scene](#getting-links-to-gameobjects-from-scene)
+
 ### Initializing the Container
-Call Container.Initialize() once your first scene will be loaded
+Call `Container.Initialize()` once your first scene will be loaded
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -74,5 +76,5 @@ public class MyGame
         hudView.Show();
     }
 }
-````
+```
  - Once a scene will be loaded - every monoBehaviour from SceneContexts will be added to UnityObjectContainer
