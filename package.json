@@ -4,6 +4,7 @@
   "description": "Lightweight dependency injection framework for Unity almost free of bindings",
   "version": "1.0.0",
   "unity": "2019.3",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+http://github.com/no0bsprey/bindlessdi.git"
