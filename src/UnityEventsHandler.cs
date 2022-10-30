@@ -6,10 +6,10 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class UnityEventsHandler : IDisposable
 	{
-		private readonly List<IFixedTickable> _fixTickables = new();
-		private readonly List<ITickable> _tickables = new();
-		private readonly List<ILateTickable> _lateTickables = new();
-		private readonly List<IDisposable> _disposables = new();
+		private readonly List<IFixedTickable> _fixTickables = new List<IFixedTickable>();
+		private readonly List<ITickable> _tickables = new List<ITickable>();
+		private readonly List<ILateTickable> _lateTickables = new List<ILateTickable>();
+		private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
 		private int _fixTickablesCount;
 		private int _tickablesCount;

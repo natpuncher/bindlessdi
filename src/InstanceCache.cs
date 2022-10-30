@@ -5,7 +5,7 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class InstanceCache : IDisposable
 	{
-		private readonly Dictionary<Type, object> _instances = new();
+		private readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 
 		public bool TryGetInstance(Type resultType, out object instance)
 		{

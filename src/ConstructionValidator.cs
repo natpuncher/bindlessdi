@@ -8,7 +8,7 @@ namespace ThirdParty.npg.bindlessdi
 	{
 		private static readonly Type ContainerType = typeof(Container);
 		
-		private readonly Dictionary<Type, bool> _typeValidity = new();
+		private readonly Dictionary<Type, bool> _typeValidity = new Dictionary<Type, bool>();
 		
 		public bool IsTypeValid(Type type)
 		{

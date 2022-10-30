@@ -7,9 +7,9 @@ namespace ThirdParty.npg.bindlessdi
 {
 	public class UnityObjectContainer : IDisposable
 	{
-		private readonly Dictionary<Type, Object> _data = new();
+		private readonly Dictionary<Type, Object> _data = new Dictionary<Type, Object>();
 
-		private List<Type> _buffer = new(32);
+		private List<Type> _buffer = new List<Type>(32);
 
 		public UnityObjectContainer()
 		{

@@ -6,7 +6,7 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class Instantiator : IDisposable
 	{
-		private Dictionary<int, object[]> _cache = new();
+		private Dictionary<int, object[]> _cache = new Dictionary<int, object[]>();
 
 		public object Construct(ConstructionInfo info, InstanceBuffer instanceBuffer)
 		{

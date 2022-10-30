@@ -7,7 +7,7 @@ namespace ThirdParty.npg.bindlessdi
 	{
 		internal InstantiationPolicy DefaultPolicy = InstantiationPolicy.Single;
 		
-		private readonly Dictionary<Type, InstantiationPolicy> _policies = new();
+		private readonly Dictionary<Type, InstantiationPolicy> _policies = new Dictionary<Type, InstantiationPolicy>();
 
 		public void Register(Type type, InstantiationPolicy instantiationPolicy)
 		{
