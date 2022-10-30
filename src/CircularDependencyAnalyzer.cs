@@ -6,8 +6,8 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class CircularDependencyAnalyzer : IDisposable
 	{
-		private readonly HashSet<Type> _hashSet = new();
-		private readonly Stack<Type> _stack = new();
+		private readonly HashSet<Type> _hashSet = new HashSet<Type>();
+		private readonly Stack<Type> _stack = new Stack<Type>();
 
 		public bool Validate(Type type)
 		{

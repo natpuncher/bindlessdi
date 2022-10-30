@@ -9,8 +9,8 @@ namespace ThirdParty.npg.bindlessdi
 		private readonly ConstructionInfoProvider _constructionInfoProvider;
 		private readonly InstanceCache _instanceCache;
 		private readonly UnityEventsHandler _unityEventsHandler;
-		private readonly Instantiator _instantiator = new();
-		private readonly Pool<InstanceBuffer> _instanceBufferPool = new();
+		private readonly Instantiator _instantiator = new Instantiator();
+		private readonly Pool<InstanceBuffer> _instanceBufferPool = new Pool<InstanceBuffer>();
 
 		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache,
 			bool handleUnityEvents)

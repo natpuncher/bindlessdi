@@ -5,7 +5,7 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class InstanceBuffer : IDisposable
 	{
-		private List<object> _instances = new(32);
+		private List<object> _instances = new List<object>(32);
 		public List<object> Instances => _instances;
 		
 		public void Add(object instance)

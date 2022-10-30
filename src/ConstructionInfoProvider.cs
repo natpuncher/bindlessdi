@@ -9,10 +9,10 @@ namespace ThirdParty.npg.bindlessdi
 	{
 		private readonly InstanceCache _instanceCache;
 		private readonly ContractBinder _contractBinder;
-		private readonly ConstructionValidator _constructionValidator = new();
-		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new();
-		private readonly FactoryTypeResolver _factoryTypeResolver = new();
-		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new();
+		private readonly ConstructionValidator _constructionValidator = new ConstructionValidator();
+		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new Dictionary<Type, ConstructionInfo>();
+		private readonly FactoryTypeResolver _factoryTypeResolver = new FactoryTypeResolver();
+		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new CircularDependencyAnalyzer();
 
 		public ConstructionInfoProvider(InstanceCache instanceCache, ContractBinder contractBinder)
 		{

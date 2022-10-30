@@ -5,7 +5,7 @@ namespace ThirdParty.npg.bindlessdi
 {
 	internal sealed class ContractBinder : IDisposable
 	{
-		private readonly Dictionary<Type, Type> _bindings = new();
+		private readonly Dictionary<Type, Type> _bindings = new Dictionary<Type, Type>();
 
 		public void Bind<TContract, TTarget>()
 		{
