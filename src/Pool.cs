@@ -14,12 +14,7 @@ namespace ThirdParty.npg.bindlessdi
 
 		public TType Get()
 		{
-			if (!_pool.TryDequeue(out var result))
-			{
-				result = new TType();
-			}
-
-			return result;
+			return _pool.Count == 0 ? new TType() : _pool.Dequeue();
 		}
 
 		public void Return(TType target)

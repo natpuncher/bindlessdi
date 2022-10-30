@@ -23,7 +23,13 @@ namespace ThirdParty.npg.bindlessdi
 
 		public void ReleaseLast()
 		{
-			if (_stack.TryPop(out var type) && _hashSet.Contains(type))
+			if (_stack.Count == 0)
+			{
+				return;
+			}
+
+			var type = _stack.Pop();
+			if (_hashSet.Contains(type))
 			{
 				_hashSet.Remove(type);
 			}
