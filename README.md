@@ -34,7 +34,7 @@ Find the `manifest.json` file in the Packages folder of your project and add the
 * [Tests](#tests)
 
 ### Initializing the Container
-To initialize *Bindlessdi* call `Container.Initialize()` from entry point of the game.
+To initialize **Bindlessdi** call `Container.Initialize()` from entry point of the game.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -104,9 +104,11 @@ public class EntryPoint : MonoBehaviour
     {
         var container = Container.Initialize();
 
-        var contexts = new Contexts();
-        container.BindInstance(contexts);
-        container.BindInstances(contexts.allContexts); // IContext[] { InputContext, GameContext }
+        var myController = new MyController();
+        container.BindInstance(myController);
+
+        var guns = new IGun[] { new FireGun(), new ColdGun() };
+        container.BindInstances(guns);
 
         var myGame = container.Resolve<MyGame>();
         myGame.Play();
@@ -114,16 +116,16 @@ public class EntryPoint : MonoBehaviour
 }
 ```
 ```c#
-public class SomeSystem
+public class MyGame
 {
-    public SomeSystem(InputContext inputContext)
+    public MyGame(MyController myController, FireGun fireGun, ColdGun coldGun)
     {
     }
 }
 ```
 
 ### Instantiation Policy
-Bindlessdi resolves everything **as single instance** by default, but it can be changed.
+**Bindlessdi** resolves everything **as single instance** by default, but it can be changed.
 
 * By changing **default initialization policy** to `InstantiationPolicy.Transient`, so every resolve will create a new intance.
 ```c#
@@ -220,7 +222,7 @@ public class Gun
 }
 ```
 
-> Factories shouldn't be binded, it will be resolved out of the box
+> Factories shouldn't be binded, they will be resolved automatically
 
 ### Working with Unity Objects
 
