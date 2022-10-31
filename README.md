@@ -34,7 +34,7 @@ Find the `manifest.json` file in the Packages folder of your project and add the
 * [Tests](#tests)
 
 ### Initializing the Container
-Call `Container.Initialize()` from entry point of the game.
+To initialize *Bindlessdi* call `Container.Initialize()` from entry point of the game.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -223,8 +223,13 @@ public class Gun
 > Factories shouldn't be binded, it will be resolved out of the box
 
 ### Working with Unity Objects
+
 * Create an implementation of `SceneContext` class
+
+* Create a **GameObject** in the root of the scene and attach the `SceneContext` implementation script to it
+
 * Add `[SerializeField]` private fields for links to **MonoBehaviours** from scene and return it from `GetObjects()` method
+
 > Could be also used for **prefabs** or **scriptable object** assets
 
 ```c#
@@ -240,8 +245,6 @@ public class MyGameSceneContext : SceneContext
     }
 }
 ```
-
-* Create a **GameObject** in the root of the scene and attach the `SceneContext` implementation script to it
 
 * Get `UnityObjectContainer` class as a constructor argument and receive objects by calling `unityObjectContainer.TryGetObject(out TObject object)` method
 ```c#
