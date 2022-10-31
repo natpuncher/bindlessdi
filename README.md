@@ -147,7 +147,7 @@ public class EntryPoint : MonoBehaviour
 }
 ```
 
-* By **registering instantiation policy** for concrete type.
+* By **registering instantiation policy** for concrete type, so every resolve of this type will create a new instance.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -167,7 +167,7 @@ public class EntryPoint : MonoBehaviour
 }
 ```
 
-* By passing **instantiation policy** to `container.Resolve()` method
+* By passing **instantiation policy** to `container.Resolve()` method, so only this call will create a new instace.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -175,13 +175,16 @@ public class EntryPoint : MonoBehaviour
     {
         var container = Container.Initialize();
 
-        var myGame = container.Resolve<MyGame>(InstantiationPolicy.Transient);
-        myGame.Play();
+        var myGame = container.Resolve<MyGame>();
 
         var myGame2 = container.Resolve<MyGame>(InstantiationPolicy.Transient);
-        myGame2.Play();
 
-        // myGame != myGame2
+        var myGame3 = container.Resolve<MyGame>(InstantiationPolicy.Transient);
+
+        var myGame4 = container.Resolve<MyGame>();
+
+        // myGame != myGame2 != myGame3
+        // myGame == myGame4
     }
 }
 ```
