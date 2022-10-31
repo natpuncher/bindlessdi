@@ -50,7 +50,7 @@ public class EntryPoint : MonoBehaviour
 
 ### Injecting classes
 **Bindlessdi** only supports **constructor injection**.
-> Usually, types shouldn't be binded.
+> Most of the types shouldn't be binded.
 
 ```c#
 public class MyGame
@@ -127,7 +127,7 @@ public class MyGame
 ### Instantiation Policy
 **Bindlessdi** resolves everything **as single instance** by default, but it can be changed.
 
-* By changing **default initialization policy** to `InstantiationPolicy.Transient`, so every resolve will create a new intance.
+* By changing **default initialization policy** to `InstantiationPolicy.Transient`, so every resolve will create a new instance.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -167,7 +167,7 @@ public class EntryPoint : MonoBehaviour
 }
 ```
 
-* By passing **instantiation policy** to `container.Resolve()` method, so only this call will create a new instace.
+* By passing **instantiation policy** to `container.Resolve()` method, so only this call will create a new instance.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
