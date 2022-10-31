@@ -230,6 +230,15 @@ public class Gun
 ### Working with Unity Objects
 
 * Create an implementation of `SceneContext` class
+```c#
+public class MyGameSceneContext : SceneContext
+{
+    public override IEnumerable<Object> GetObjects()
+    {
+        return new Object[] { };
+    }
+}
+```
 
 * Create a **GameObject** in the root of the scene and attach the `SceneContext` implementation script to it
 
