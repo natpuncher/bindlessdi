@@ -285,7 +285,7 @@ public class MyGame
 
 ### Unity Events
 
-Implement ITickable, IFixedTickable, ILateTickable, IDisposable to handle **Unity Events**. There is no need to bind these interfaces to a class, once instance will be resolved - **Unity Events** will be passed to it.
+Implement `ITickable`, `IFixedTickable`, `ILateTickable`, `IDisposable` to handle **Unity Events**. There is no need to bind these interfaces to a class, once instance will be resolved - **Unity Events** will be passed to it.
 
 > Unity Update => ITickable<br>
 Unity FixedUpdate => IFixedTickable<br>
