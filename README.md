@@ -1,5 +1,5 @@
 ![](https://img.shields.io/badge/unity-2019.3%20or%20later-green)
-[![](https://img.shields.io/github/license/no0bsprey/bindlessdi)](https://github.com/mob-sakai/UIEffect/blob/master/LICENSE.txt)
+[![](https://img.shields.io/github/license/no0bsprey/bindlessdi)](https://github.com/no0bsprey/bindlessdi/blob/master/LICENSE.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=flat-square)](https://makeapullrequest.com)
 [![](https://img.shields.io/github/stars/no0bsprey/bindlessdi?style=social)](https://github.com/no0bsprey/bindlessdi/)
 
