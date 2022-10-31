@@ -49,7 +49,7 @@ public class EntryPoint : MonoBehaviour
 ```
 
 ### Injecting classes
-Bindlessdi only supports **constructor injection**.
+**Bindlessdi** only supports **constructor injection**.
 > Usually, types shouldn't be binded.
 
 ```c#
