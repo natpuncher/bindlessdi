@@ -1,15 +1,14 @@
 ![](https://img.shields.io/badge/unity-2019.3%20or%20later-green)
 [![](https://img.shields.io/github/license/no0bsprey/bindlessdi)](https://github.com/no0bsprey/bindlessdi/blob/master/LICENSE.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=flat-square)](https://makeapullrequest.com)
-[![](https://img.shields.io/github/stars/no0bsprey/bindlessdi?style=social)](https://github.com/no0bsprey/bindlessdi/)
 
 bindlessdi
 ===
 
 Lightweight dependency injection framework for Unity almost free of bindings.
 
- * [Installation](#installation) 
- * [Usage](#usage)
+* [Installation](#installation)
+* [Usage](#usage)
 
 ## Installation
 
@@ -24,41 +23,227 @@ Find the `manifest.json` file in the Packages folder of your project and add the
 
 ## Usage
 
- * [Initializing](#initializing-the-container) 
- * [GameObjects from scene](#getting-links-to-gameobjects-from-scene)
+* [Initializing](#initializing-the-container) 
+* [Injecting classes](#injecting-classes)
+* [Injecting interfaces](#injecting-interfaces)
+* [Bind Instance](#bind-instance)
+* [Instantiation Policy](#instantiation-policy)
+* [Factory](#factory)
+* [Unity Objects](#working-with-unity-objects)
+* [Unity Events](#unity-events)
+* [Tests](#tests)
 
 ### Initializing the Container
-Call `Container.Initialize()` once your first scene will be loaded
+Call `Container.Initialize()` from entry point of the game.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
     private void Start()
     {
         var container = Container.Initialize();
+
         var myGame = container.Resolve<MyGame>();
         myGame.Play();
     }
 }
 ```
 
-### Getting links to gameobjects from scene
- - Create a SceneContext class for every scene in your game
- - Add serialized fields for links to MonoBehaviours you need
-```c#
-public class MyGameSceneContext : SceneContext
-{
-    [SerializeField] private MyHudView _hudView;
-    [SerializeField] private Camera _camera;
-    ...
+### Injecting classes
+Bindlessdi only supports **constructor injection**.
+> Usually, types shouldn't be binded.
 
-    public override IEnumerable<Object> GetObjects()
+```c#
+public class MyGame
+{
+    private readonly MyController _myController;
+
+    public MyGame(MyController controller)
     {
-        return new Object[] { _hudView, _camera };
+        _myController = controller;
     }
 }
 ```
- - Create a gameObject and attach this scene context script to it
- - Get UnityObjectContainer class as a constructor argument
+
+### Injecting interfaces
+To inject interfaces `container.BindImplementation<IInterface, Implementation>()` should be called after container initialization.
+```c#
+public class MyController : IController
+{
+}
+```
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+        container.BindImplementation<IController, MyController>();
+
+        var myGame = container.Resolve<MyGame>();
+        myGame.Play();
+    }
+}
+```
+```c#
+public class MyGame
+{
+    private readonly IController _controller;
+
+    public MyGame(IController controller)
+    {
+        _controller = controller;
+    }
+}
+```
+
+### Bind Instance
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+
+        var contexts = new Contexts();
+        container.BindInstance(contexts);
+        container.BindInstances(contexts.allContexts); // IContext[] { InputContext, GameContext }
+
+        var myGame = container.Resolve<MyGame>();
+        myGame.Play();
+    }
+}
+```
+```c#
+public class SomeSystem
+{
+    public SomeSystem(InputContext inputContext)
+    {
+    }
+}
+```
+
+### Instantiation Policy
+Bindlessdi resolves everything **as single instance** by default, but it can be changed.
+
+* By changing **default initialization policy** to `InstantiationPolicy.Transient`, so every resolve will create a new intance.
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+        container.DefaultInstantiationPolicy = InstantiationPolicy.Transient;
+
+        var myGame = container.Resolve<MyGame>();
+        myGame.Play();
+
+        var myGame2 = container.Resolve<MyGame>();
+        myGame2.Play();
+
+        // myGame != myGame2
+    }
+}
+```
+
+* By **registering instantiation policy** for concrete type.
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+        container.RegisterInstantiationPolicy<MyGame>(InstantiationPolicy.Transient);
+
+        var myGame = container.Resolve<MyGame>();
+        myGame.Play();
+
+        var myGame2 = container.Resolve<MyGame>();
+        myGame2.Play();
+
+        // myGame != myGame2
+    }
+}
+```
+
+* By passing **instantiation policy** to `container.Resolve()` method
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+
+        var myGame = container.Resolve<MyGame>(InstantiationPolicy.Transient);
+        myGame.Play();
+
+        var myGame2 = container.Resolve<MyGame>(InstantiationPolicy.Transient);
+        myGame2.Play();
+
+        // myGame != myGame2
+    }
+}
+```
+
+### Factory
+```c#
+public interface IBullet
+{
+}
+
+public class FireBullet : IBullet
+{
+}
+
+public class ColdBullet : IBullet
+{
+}
+```
+```c#
+public class Gun
+{
+    private readonly IFactory<IBullet> _factory;
+
+    public Gun(IFactory<IBullet> factory)
+    {
+        _factory = factory;
+    }
+
+    public IBullet Fire()
+    {
+        return _factory.Resolve<FireBullet>(InstantiationPolicy.Transient);
+    }
+
+    public IBullet Cold()
+    {
+        return _factory.Resolve<ColdBullet>(InstantiationPolicy.Transient);
+    }
+}
+```
+
+> Factories shouldn't be binded, it will be resolved out of the box
+
+### Working with Unity Objects
+* Create an implementation of `SceneContext` class
+* Add `[SerializeField]` private fields for links to **MonoBehaviours** from scene and return it from `GetObjects()` method
+> Could be also used for **prefabs** or **scriptable object** assets
+
+```c#
+public class MyGameSceneContext : SceneContext
+{
+    [SerializeField] private Camera _camera;
+    [SerializeField] private MyHudView _hudView;
+    [SerializeField] private MyScriptableObjectConfig _config;
+
+    public override IEnumerable<Object> GetObjects()
+    {
+        return new Object[] { _camera, _hudView, _config };
+    }
+}
+```
+
+* Create a **GameObject** in the root of the scene and attach the `SceneContext` implementation script to it
+
+* Get `UnityObjectContainer` class as a constructor argument and receive objects by calling `unityObjectContainer.TryGetObject(out TObject object)` method
 ```c#
 public class MyGame
 {
@@ -71,12 +256,94 @@ public class MyGame
     
     public void Play()
     {
-        if (!_unityObjectContainer.TryGetObject(out MyHudView hudView))
+        if (!_unityObjectContainer.TryGetObject(out MyHudView hudView) ||
+            !_unityObjectContainer.TryGetObject(out MyScriptableObjectConfig config))
         {
             return;
         }
-        hudView.Show();
+
+        hudView.Show(config);
     }
 }
 ```
- - Once a scene will be loaded - every MonoBehaviour you return from `GetObjects` method of `SceneContexts` will be added to `UnityObjectContainer`
+
+### Unity Events
+
+Implement ITickable, IFixedTickable, ILateTickable, IDisposable to handle **Unity Events**. There is no need to bind these interfaces to a class, once instance will be resolved - **Unity Events** will be passed to it.
+
+> Unity Update => ITickable<br>
+Unity FixedUpdate => IFixedTickable<br>
+Unity LateUpdate => ILateTickable<br>
+Unity Application.Quit => IDisposable
+
+```c#
+public class MyGame : ITickable, IDisposable
+{
+    public void Tick()
+    {
+        // called on Unity Update
+    }
+
+    public void Dispose()
+    {
+        // called on Application.Quit
+    }
+}
+```
+
+This functionality could be turned off by passing `false` to **Container** initialization
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize(false);
+
+        var myGame = container.Resolve<MyGame>();
+        myGame.Play();
+    }
+}
+```
+```c#
+public class MyGame : ITickable, IDisposable
+{
+    public void Tick()
+    {
+        // not called
+    }
+
+    public void Dispose()
+    {
+        // not called
+    }
+}
+```
+
+### Tests
+
+To use **Bindlessdi** in tests call `Container.Initialize(false)` in the begining of a test and `container.Dispose` in the end.
+
+```c#
+public class MyTests
+{
+    [Test]
+    public void TestResolve()
+    {
+            var container = Container.Initialize(false);
+
+            var a = container.Resolve<A>();
+            var b = container.Resolve<B>();
+            var c = container.Resolve<C>();
+            var d = container.Resolve<D>();
+
+            Assert.True(a.B == b);
+            Assert.True(a.C == b.C);
+            Assert.True(a.C == c);
+            Assert.True(b.C == c);
+            Assert.True(b.D == c.D);
+            Assert.True(b.D == d);
+
+            container.Dispose();
+    }
+}
+```
