@@ -235,12 +235,12 @@ public class MyGameSceneContext : SceneContext
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private MyHudView _hudView;
-    [SerializeField] private BulletView _bullerPrefab;
+    [SerializeField] private BulletView _bulletPrefab;
     [SerializeField] private MyScriptableObjectConfig _config;
 
     public override IEnumerable<Object> GetObjects()
     {
-        return new Object[] { _camera, _hudView, _config };
+        return new Object[] { _camera, _hudView, _bulletPrefab, _config };
     }
 }
 ```
