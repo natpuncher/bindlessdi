@@ -228,15 +228,14 @@ public class Gun
 
 * Create a **GameObject** in the root of the scene and attach the `SceneContext` implementation script to it
 
-* Add `[SerializeField]` private fields for links to **MonoBehaviours** from scene and return it from `GetObjects()` method
-
-> Could be also used for **prefabs** or **scriptable object** assets
+* Add `[SerializeField]` private fields for links to **Components** from scene, **Prefabs** or **Scriptable Object** assets and return it from `GetObjects()` method
 
 ```c#
 public class MyGameSceneContext : SceneContext
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private MyHudView _hudView;
+    [SerializeField] private BulletView _bullerPrefab;
     [SerializeField] private MyScriptableObjectConfig _config;
 
     public override IEnumerable<Object> GetObjects()
