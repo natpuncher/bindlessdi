@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Object = UnityEngine.Object;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class ConstructionValidator : IDisposable
 	{
 		private static readonly Type ContainerType = typeof(Container);
-		
+		private static readonly Type UnityObjectType = typeof(Object);
+
 		private readonly Dictionary<Type, bool> _typeValidity = new Dictionary<Type, bool>();
-		
+
 		public bool IsTypeValid(Type type)
 		{
 			if (!_typeValidity.TryGetValue(type, out var isValid))
@@ -36,7 +38,7 @@ namespace ThirdParty.npg.bindlessdi
 		{
 			_typeValidity.Clear();
 		}
-		
+
 		private ConstructorInfo[] GetConstructors(Type type)
 		{
 			return type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -45,9 +47,11 @@ namespace ThirdParty.npg.bindlessdi
 		private bool IsTypeValidInternal(Type type)
 		{
 			var isContainer = type == ContainerType;
-			return !isContainer && 
-			       !type.IsAbstract && 
-			       !type.IsValueType;
+			var isUnityObject = UnityObjectType.IsAssignableFrom(type);
+			return !type.IsAbstract &&
+			       !type.IsValueType &&
+			       !isContainer &&
+			       !isUnityObject;
 		}
 	}
 }

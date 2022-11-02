@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class UnityEventsHandler : IDisposable
 	{
@@ -96,9 +96,9 @@ namespace ThirdParty.npg.bindlessdi
 
 		private void OnDestroyed()
 		{
-			foreach (var disposable in _disposables)
+			for (var i = _disposables.Count - 1; i >= 0; i--)
 			{
-				disposable?.Dispose();
+				_disposables[i]?.Dispose();
 			}
 		}
 	}

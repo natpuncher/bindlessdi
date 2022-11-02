@@ -1,4 +1,4 @@
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class Factory<TType> : IFactory<TType> where TType : class
 	{

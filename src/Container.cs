@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
-	public class Container : IDisposable
+	public sealed class Container : IDisposable
 	{
 		private readonly Resolver _resolver;
 		private readonly ContractBinder _contractBinder;
 		private readonly InstanceCache _instanceCache;
 		private readonly InstantiationPolicyRegistry _instantiationPolicyRegistry;
 		private readonly UnityObjectContainer _unityObjectContainer;
+		private readonly UnityEventsHandler _unityEventsHandler;
 
 		public InstantiationPolicy DefaultInstantiationPolicy
 		{
@@ -24,10 +25,7 @@ namespace ThirdParty.npg.bindlessdi
 			if (_instance == null)
 			{
 				_instance = new Container(handleUnityEvents);
-				_instance.BindInstance(_instance._unityObjectContainer);
-				_instance.BindInstance(_instance._resolver);
 			}
-
 			return _instance;
 		}
 
@@ -36,14 +34,23 @@ namespace ThirdParty.npg.bindlessdi
 			_instantiationPolicyRegistry = new InstantiationPolicyRegistry();
 			_contractBinder = new ContractBinder();
 			_instanceCache = new InstanceCache();
-			_resolver = new Resolver(_instantiationPolicyRegistry, _contractBinder, _instanceCache, handleUnityEvents);
+			
+			if (handleUnityEvents)
+			{
+				_unityEventsHandler = new UnityEventsHandler();
+				_unityEventsHandler?.TryRegisterInstance(this);
+			}
+			
+			_resolver = new Resolver(_instantiationPolicyRegistry, _contractBinder, _instanceCache, _unityEventsHandler);
+			BindInstance(_resolver);
+			
 			_unityObjectContainer = new UnityObjectContainer();
+			BindInstance(_unityObjectContainer);
 		}
 
 		public void BindImplementation<TInterface, TType>(InstantiationPolicy instantiationPolicy = InstantiationPolicy.Single) where TType : TInterface 
 		{
 			_contractBinder.Bind<TInterface, TType>();
-			RegisterInstantiationPolicy<TInterface>(instantiationPolicy);
 			RegisterInstantiationPolicy<TType>(instantiationPolicy);
 		}
 
@@ -55,6 +62,7 @@ namespace ThirdParty.npg.bindlessdi
 			}
 			
 			_instanceCache.AddInstance(typeof(TType), instance);
+			_unityEventsHandler?.TryRegisterInstance(instance);
 		}
 
 		public void BindInstances<TType>(IEnumerable<TType> instances)
@@ -67,6 +75,7 @@ namespace ThirdParty.npg.bindlessdi
 				}
 				
 				_instanceCache.AddInstance(instance.GetType(), instance);
+				_unityEventsHandler?.TryRegisterInstance(instance);
 			}
 		}
 
@@ -102,6 +111,7 @@ namespace ThirdParty.npg.bindlessdi
 			_contractBinder?.Dispose();
 			_instanceCache?.Dispose();
 			_unityObjectContainer?.Dispose();
+			_unityEventsHandler?.Dispose();
 			_instance = null;
 		}
 	}

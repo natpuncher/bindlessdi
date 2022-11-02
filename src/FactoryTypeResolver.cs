@@ -1,6 +1,6 @@
 using System;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class FactoryTypeResolver
 	{

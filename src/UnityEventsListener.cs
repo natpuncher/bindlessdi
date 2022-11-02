@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	[AddComponentMenu("")]
 	internal sealed class UnityEventsListener : MonoBehaviour
