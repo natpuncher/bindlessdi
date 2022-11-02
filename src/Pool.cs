@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	public class Pool<TType> : IDisposable where TType : IDisposable, new()
 	{

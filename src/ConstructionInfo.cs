@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class ConstructionInfo
 	{

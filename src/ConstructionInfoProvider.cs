@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class ConstructionInfoProvider : IDisposable
 	{

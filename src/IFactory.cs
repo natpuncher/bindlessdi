@@ -1,4 +1,4 @@
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	public interface IFactory<TType> where TType : class
 	{

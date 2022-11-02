@@ -1,6 +1,6 @@
 using System;
 
-namespace ThirdParty.npg.bindlessdi
+namespace npg.bindlessdi
 {
 	internal sealed class Resolver : IDisposable
 	{
@@ -13,22 +13,18 @@ namespace ThirdParty.npg.bindlessdi
 		private readonly Pool<InstanceBuffer> _instanceBufferPool = new Pool<InstanceBuffer>();
 
 		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache,
-			bool handleUnityEvents)
+			UnityEventsHandler unityEventsHandler)
 		{
 			_instantiationPolicyRegistry = instantiationPolicyRegistry;
 			_contractBinder = contractBinder;
 			_instanceCache = instanceCache;
 			_constructionInfoProvider = new ConstructionInfoProvider(_instanceCache, _contractBinder);
-			if (handleUnityEvents)
-			{
-				_unityEventsHandler = new UnityEventsHandler();
-			}
+			_unityEventsHandler = unityEventsHandler;
 		}
 
 		public void Dispose()
 		{
 			_constructionInfoProvider?.Dispose();
-			_unityEventsHandler?.Dispose();
 			_instantiator?.Dispose();
 		}
 
