@@ -2,7 +2,7 @@
   "name": "com.npg.bindlessdi",
   "displayName": "npg.bindlessdi",
   "description": "Lightweight dependency injection framework for Unity almost free of bindings",
-  "version": "1.0.0",
+  "version": "1.1",
   "unity": "2019.3",
   "license": "MIT",
   "repository": {
@@ -16,6 +16,7 @@
   },
   "dependencies": {},
   "keywords": [
-    "di"
+    "di",
+    "dependency injection"
   ]
 }
