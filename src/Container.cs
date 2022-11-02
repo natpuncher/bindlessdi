@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace npg.bindlessdi
 {
-	public class Container : IDisposable
+	public sealed class Container : IDisposable
 	{
 		private readonly Resolver _resolver;
 		private readonly ContractBinder _contractBinder;

@@ -79,9 +79,9 @@ namespace npg.bindlessdi
 			}
 			
 			var buffer = _instanceBufferPool.Get();
-			foreach (var dependencyInfo in info.Dependencies)
+			foreach (var dependencyType in info.Dependencies)
 			{
-				buffer.Add(Resolve(dependencyInfo.TargetType));
+				buffer.Add(Resolve(dependencyType));
 			}
 
 			var result = _instantiator.Construct(info, buffer);

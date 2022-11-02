@@ -36,7 +36,7 @@ namespace npg.bindlessdi
 					info = null;
 					return false;
 				}
-				
+
 				info = CreateInstantiationInfo(type);
 				if (info == null)
 				{
@@ -63,7 +63,7 @@ namespace npg.bindlessdi
 			{
 				targetType = type;
 			}
-			
+
 			if (_factoryTypeResolver.TryResolve(targetType, out var factoryType))
 			{
 				targetType = factoryType;
@@ -71,25 +71,22 @@ namespace npg.bindlessdi
 
 			if (!_constructionValidator.IsTypeValid(targetType))
 			{
-				Debug.LogError($"[bindlessdi] Can't create instantiation info for {targetType.FullName}: type is invalid");
+				Debug.LogError($"[bindlessdi] Can't create instantiation info for {targetType.FullName}: type is invalid\n{_circularDependencyAnalyzer}");
 				return null;
 			}
 
 			var constructor = _constructionValidator.GetValidConstructor(targetType);
 			if (constructor == null)
 			{
-				Debug.LogError($"[bindlessdi] Can't create instantiation info for {targetType.FullName}: no valid constructor found");
+				Debug.LogError(
+					$"[bindlessdi] Can't create instantiation info for {targetType.FullName}: no valid constructor found\n{_circularDependencyAnalyzer}");
 				return null;
 			}
 
 			var info = new ConstructionInfo(targetType, constructor);
-			var hasInstance = _instanceCache.TryGetInstance(targetType, out _);
-			if (!hasInstance)
+			if (!TryProcessParameters(constructor, info))
 			{
-				if (!TryProcessParameters(constructor, info))
-				{
-					return null;
-				}
+				return null;
 			}
 
 			return info;
@@ -102,12 +99,18 @@ namespace npg.bindlessdi
 			for (var index = 0; index < length; index++)
 			{
 				var parameter = parameters[index];
-				if (!TryGetInfoInternal(parameter.ParameterType, out var dependencyInfo))
+				var parameterType = parameter.ParameterType;
+				info.Dependencies.Add(parameterType);
+				var hasInstance = _instanceCache.TryGetInstance(parameterType, out _);
+				if (hasInstance)
+				{
+					continue;
+				}
+				
+				if (!TryGetInfoInternal(parameterType, out _))
 				{
 					return false;
 				}
-
-				info.Dependencies.Add(dependencyInfo);
 			}
 
 			return true;

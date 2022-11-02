@@ -96,9 +96,9 @@ namespace npg.bindlessdi
 
 		private void OnDestroyed()
 		{
-			foreach (var disposable in _disposables)
+			for (var i = _disposables.Count - 1; i >= 0; i--)
 			{
-				disposable?.Dispose();
+				_disposables[i]?.Dispose();
 			}
 		}
 	}
