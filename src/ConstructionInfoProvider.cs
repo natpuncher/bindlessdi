@@ -13,6 +13,7 @@ namespace npg.bindlessdi
 		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new Dictionary<Type, ConstructionInfo>();
 		private readonly FactoryTypeResolver _factoryTypeResolver = new FactoryTypeResolver();
 		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new CircularDependencyAnalyzer();
+		private readonly ImplementationGuesser _implementationGuesser = new ImplementationGuesser();
 
 		public ConstructionInfoProvider(InstanceCache instanceCache, ContractBinder contractBinder)
 		{
@@ -55,6 +56,7 @@ namespace npg.bindlessdi
 			_instantiationInfos?.Clear();
 			_constructionValidator?.Dispose();
 			_circularDependencyAnalyzer?.Dispose();
+			_implementationGuesser?.Dispose();
 		}
 
 		private ConstructionInfo CreateInstantiationInfo(Type type)
@@ -67,6 +69,11 @@ namespace npg.bindlessdi
 			if (_factoryTypeResolver.TryResolve(targetType, out var factoryType))
 			{
 				targetType = factoryType;
+			}
+
+			if (_implementationGuesser.TryGuess(targetType, out var guessedType))
+			{
+				targetType = guessedType;
 			}
 
 			if (!_constructionValidator.IsTypeValid(targetType))
