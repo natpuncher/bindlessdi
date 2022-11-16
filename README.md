@@ -6,6 +6,7 @@ bindlessdi
 ===
 
 Lightweight dependency injection framework for Unity almost free of bindings.
+**Only supports constructor injection.**
 
 * [Installation](#installation)
 * [Usage](#usage)
@@ -24,8 +25,7 @@ Find the `manifest.json` file in the Packages folder of your project and add the
 ## Usage
 
 * [Initializing](#initializing-the-container) 
-* [Injecting classes](#injecting-classes)
-* [Injecting interfaces](#injecting-interfaces)
+* [Injecting](#injecting)
 * [Bind Instance](#bind-instance)
 * [Instantiation Policy](#instantiation-policy)
 * [Factory](#factory)
@@ -48,10 +48,8 @@ public class EntryPoint : MonoBehaviour
 }
 ```
 
-### Injecting classes
+### Injecting
 **Bindlessdi** only supports **constructor injection**.
-> Most of the types shouldn't be binded.
-
 ```c#
 public class MyGame
 {
@@ -64,24 +62,10 @@ public class MyGame
 }
 ```
 
-### Injecting interfaces
-To inject interfaces `container.BindImplementation<IInterface, Implementation>()` should be called after container initialization.
+In most cases **Bindlessdi** will guess implementation by itself without any bindings.
 ```c#
 public class MyController : IController
 {
-}
-```
-```c#
-public class EntryPoint : MonoBehaviour
-{
-    private void Start()
-    {
-        var container = Container.Initialize();
-        container.BindImplementation<IController, MyController>();
-
-        var myGame = container.Resolve<MyGame>();
-        myGame.Play();
-    }
 }
 ```
 ```c#
@@ -96,7 +80,46 @@ public class MyGame
 }
 ```
 
+If there are several of implementations for specific interface, intended implementation should be defined by calling `container.BindImplementation<IInterface, Implementation>()`.
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+        container.BindImplementation<IBar, Qux>();
+
+        var myGame = container.Resolve<MyGame>();
+        myGame.Play();
+    }
+}
+```
+```c#
+public class Foo : IFoo
+{
+}
+
+public class Bar : IBar
+{
+}
+
+public class Qux : IBar
+{
+}
+```
+```c#
+public class MyGame
+{
+    public MyGame(IFoo foo, IBar bar)
+    {
+        // bar is Qux
+    }
+}
+```
+
 ### Bind Instance
+Already instanced objects could be added to container by calling `container.BindInstance(instance)`.
+Its also possible to add a bunch of them using `container.BindInstances(instances)`.
 ```c#
 public class EntryPoint : MonoBehaviour
 {
@@ -190,6 +213,7 @@ public class EntryPoint : MonoBehaviour
 ```
 
 ### Factory
+**Factories** shouldn't be binded, they will be resolved automatically.
 ```c#
 public interface IBullet
 {
@@ -224,8 +248,6 @@ public class Gun
     }
 }
 ```
-
-> Factories shouldn't be binded, they will be resolved automatically
 
 ### Working with Unity Objects
 
