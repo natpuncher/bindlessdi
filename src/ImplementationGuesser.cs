@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace npg.bindlessdi
 {
-	public class ImplementationGuesser : IDisposable
+	internal sealed class ImplementationGuesser : IDisposable
 	{
 		private Dictionary<Type, List<Type>> _foundImplementations = new Dictionary<Type, List<Type>>();
 
