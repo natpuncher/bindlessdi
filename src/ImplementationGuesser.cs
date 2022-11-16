@@ -29,7 +29,7 @@ namespace npg.bindlessdi
 				if (implementationTypes.Count > 1)
 				{
 					Debug.LogError($"[bindlessdi] Ambiguous implementations found for {type.FullName} -> ({string.Join(" | ", implementationTypes)}), " +
-					               $"right implementation should be binded!");
+					               $"intended implementation should be binded!");
 				}
 
 				return true;
