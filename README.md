@@ -180,12 +180,31 @@ public class EntryPoint : MonoBehaviour
         container.RegisterInstantiationPolicy<MyGame>(InstantiationPolicy.Transient);
 
         var myGame = container.Resolve<MyGame>();
-        myGame.Play();
-
         var myGame2 = container.Resolve<MyGame>();
-        myGame2.Play();
-
         // myGame != myGame2
+    }
+}
+```
+
+* By **registering instantiation policy** for an interface or a base type, so every resolve of a type implementing it will get this policy override.
+```c#
+public class EntryPoint : MonoBehaviour
+{
+    private void Start()
+    {
+        var container = Container.Initialize();
+    
+        container.DefaultInstantiationPolicy = InstantiationPolicy.Single;
+        container.RegisterInstantiationPolicy<ITrigger>(InstantiationPolicy.Transient);
+        container.RegisterInstantiationPolicy<TriggerA>(InstantiationPolicy.Single);
+		
+        var a1 = container.Resolve<TriggerA>();
+        var a2 = container.Resolve<TriggerA>();
+        // a1 == a2
+		
+        var b1 = container.Resolve<TriggerB>();
+        var b2 = container.Resolve<TriggerB>();
+        // b1 != b2
     }
 }
 ```
@@ -199,13 +218,9 @@ public class EntryPoint : MonoBehaviour
         var container = Container.Initialize();
 
         var myGame = container.Resolve<MyGame>();
-
         var myGame2 = container.Resolve<MyGame>(InstantiationPolicy.Transient);
-
         var myGame3 = container.Resolve<MyGame>(InstantiationPolicy.Transient);
-
         var myGame4 = container.Resolve<MyGame>();
-
         // myGame != myGame2 != myGame3
         // myGame == myGame4
     }
