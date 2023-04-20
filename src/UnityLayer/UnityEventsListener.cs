@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace npg.bindlessdi.UnityEvents
+namespace npg.bindlessdi.UnityLayer
 {
 	[AddComponentMenu("")]
 	internal sealed class UnityEventsListener : MonoBehaviour

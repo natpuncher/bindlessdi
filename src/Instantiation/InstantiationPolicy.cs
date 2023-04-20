@@ -1,4 +1,4 @@
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Instantiation
 {
 	public enum InstantiationPolicy
 	{

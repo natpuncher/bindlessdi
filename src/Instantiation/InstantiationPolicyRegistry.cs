@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Instantiation
 {
 	internal sealed class InstantiationPolicyRegistry : IDisposable
 	{

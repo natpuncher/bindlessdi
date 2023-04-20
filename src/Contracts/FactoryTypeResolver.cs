@@ -1,6 +1,6 @@
 using System;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Contracts
 {
 	internal sealed class FactoryTypeResolver
 	{

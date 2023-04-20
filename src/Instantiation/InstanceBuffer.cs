@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Instantiation
 {
 	internal sealed class InstanceBuffer : IDisposable
 	{

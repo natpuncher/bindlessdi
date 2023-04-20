@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace npg.bindlessdi.UnityEvents
+namespace npg.bindlessdi.UnityLayer
 {
 	internal sealed class UnityEventsHandler : IDisposable
 	{

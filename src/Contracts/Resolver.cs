@@ -1,7 +1,9 @@
 using System;
-using npg.bindlessdi.UnityEvents;
+using npg.bindlessdi.Instantiation;
+using npg.bindlessdi.UnityLayer;
+using npg.bindlessdi.Utils;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Contracts
 {
 	internal sealed class Resolver : IDisposable
 	{

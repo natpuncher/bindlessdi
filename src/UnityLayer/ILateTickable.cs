@@ -1,4 +1,4 @@
-namespace npg.bindlessdi.UnityEvents
+namespace npg.bindlessdi.UnityLayer
 {
 	public interface ILateTickable
 	{

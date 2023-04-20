@@ -1,4 +1,6 @@
-namespace npg.bindlessdi
+using npg.bindlessdi.Instantiation;
+
+namespace npg.bindlessdi.Contracts
 {
 	public interface IFactory<TType> where TType : class
 	{
