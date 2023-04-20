@@ -1,4 +1,4 @@
-namespace npg.bindlessdi
+namespace npg.bindlessdi.UnityEvents
 {
 	public interface ITickable
 	{

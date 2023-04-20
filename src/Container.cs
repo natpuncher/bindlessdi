@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using npg.bindlessdi.UnityEvents;
 
 namespace npg.bindlessdi
 {

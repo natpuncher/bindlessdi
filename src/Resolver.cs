@@ -1,4 +1,5 @@
 using System;
+using npg.bindlessdi.UnityEvents;
 
 namespace npg.bindlessdi
 {

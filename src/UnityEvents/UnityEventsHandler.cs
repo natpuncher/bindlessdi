@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.UnityEvents
 {
 	internal sealed class UnityEventsHandler : IDisposable
 	{
 		private readonly List<IFixedTickable> _fixTickables = new List<IFixedTickable>();
 		private readonly List<ITickable> _tickables = new List<ITickable>();
 		private readonly List<ILateTickable> _lateTickables = new List<ILateTickable>();
+		private readonly List<IPausable> _pausables = new List<IPausable>();
 		private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
 		private int _fixTickablesCount;
@@ -28,6 +29,8 @@ namespace npg.bindlessdi
 			listener.OnFixUpdated += OnFixUpdated;
 			listener.OnUpdated += OnUpdated;
 			listener.OnLateUpdated += OnLateUpdated;
+			listener.OnPause += OnPause;
+			listener.OnUnpause += OnUnpause;
 			listener.OnDestroyed += OnDestroyed;
 		}
 
@@ -51,6 +54,11 @@ namespace npg.bindlessdi
 			if (instance is ILateTickable lateTickable)
 			{
 				_lateTickables.Add(lateTickable);
+			}
+
+			if (instance is IPausable pausable)
+			{
+				_pausables.Add(pausable);
 			}
 
 			_fixTickablesCount = _fixTickables.Count;
@@ -91,6 +99,22 @@ namespace npg.bindlessdi
 			for (var i = 0; i < _lateTickablesCount; i++)
 			{
 				_lateTickables[i]?.LateTick();
+			}
+		}
+		
+		private void OnPause()
+		{
+			for (var i = _pausables.Count - 1; i >= 0; i--)
+			{
+				_pausables[i]?.Pause();
+			}
+		}
+
+		private void OnUnpause()
+		{
+			for (var i = _pausables.Count - 1; i >= 0; i--)
+			{
+				_pausables[i]?.Unpause();
 			}
 		}
 
