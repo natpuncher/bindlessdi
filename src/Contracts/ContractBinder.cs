@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Contracts
 {
 	internal sealed class ContractBinder : IDisposable
 	{

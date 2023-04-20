@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.UnityLayer
 {
 	[AddComponentMenu("")]
 	internal sealed class UnityEventsListener : MonoBehaviour
@@ -10,6 +10,8 @@ namespace npg.bindlessdi
 		internal Action OnFixUpdated;
 		internal Action OnUpdated;
 		internal Action OnLateUpdated;
+		internal Action OnPause;
+		internal Action OnUnpause;
 
 		private void FixedUpdate()
 		{
@@ -25,7 +27,33 @@ namespace npg.bindlessdi
 		{
 			OnLateUpdated?.Invoke();
 		}
-
+		
+#if !UNITY_EDITOR
+		private void OnApplicationFocus(bool hasFocus)
+		{
+			if (hasFocus)
+			{
+				OnUnpause?.Invoke();
+			}
+			else
+			{
+				OnPause?.Invoke();
+			}
+		}
+#else
+		private void OnApplicationPause(bool pauseStatus)
+		{
+			if (pauseStatus)
+			{
+				OnPause?.Invoke();
+			}
+			else
+			{
+				OnUnpause?.Invoke();
+			}
+		}
+#endif
+		
 		private void OnDestroy()
 		{
 			OnDestroyed?.Invoke();

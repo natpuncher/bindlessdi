@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using npg.bindlessdi.Contracts;
+using npg.bindlessdi.Utils;
 using UnityEngine;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Instantiation
 {
 	internal sealed class ConstructionInfoProvider : IDisposable
 	{
