@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Instantiation
 {
 	internal sealed class CircularDependencyAnalyzer : IDisposable
 	{

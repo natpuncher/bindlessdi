@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Object = UnityEngine.Object;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.Instantiation
 {
 	internal sealed class ConstructionValidator : IDisposable
 	{

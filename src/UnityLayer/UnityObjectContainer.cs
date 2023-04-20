@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.UnityLayer
 {
 	public class UnityObjectContainer : IDisposable
 	{

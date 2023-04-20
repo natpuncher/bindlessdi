@@ -1,4 +1,6 @@
-namespace npg.bindlessdi
+using npg.bindlessdi.Instantiation;
+
+namespace npg.bindlessdi.Contracts
 {
 	internal sealed class Factory<TType> : IFactory<TType> where TType : class
 	{

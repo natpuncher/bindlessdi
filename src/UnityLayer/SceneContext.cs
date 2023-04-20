@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace npg.bindlessdi
+namespace npg.bindlessdi.UnityLayer
 {
 	public abstract class SceneContext : MonoBehaviour
 	{
