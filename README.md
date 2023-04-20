@@ -13,7 +13,7 @@ Lightweight dependency injection framework for Unity almost free of bindings.
 
 ## Installation
 
-Find the `manifest.json` file in the Packages folder of your project and add the followng line to dependencies section:
+Find the `manifest.json` file in the Packages folder of your project and add the following line to dependencies section:
 ```json
 {
  "dependencies": {
@@ -228,7 +228,10 @@ public class EntryPoint : MonoBehaviour
 ```
 
 ### Factory
-**Factories** shouldn't be binded, they will be resolved automatically.
+To create instances on demand use **Factories** for a specific interface.
+Just add `IFactory<MyInterface>` as a constructor argument and call `Resolve` with concrete type when needed.
+It is also possible to override instantiation policy on resolve.
+There is no need to bind **Factories**, they will be resolved automatically.
 ```c#
 public interface IBullet
 {
@@ -322,11 +325,12 @@ public class MyGame
 
 ### Unity Events
 
-Implement `ITickable`, `IFixedTickable`, `ILateTickable`, `IDisposable` to handle **Unity Events**. There is no need to bind these interfaces to a class, once instance will be resolved - **Unity Events** will be passed to it.
+Implement `ITickable`, `IFixedTickable`, `ILateTickable`, `IPausable`, `IDisposable` to handle **Unity Events**. There is no need to bind these interfaces to a class, once instance will be resolved - **Unity Events** will be passed to it.
 
 > Unity Update => ITickable<br>
 Unity FixedUpdate => IFixedTickable<br>
 Unity LateUpdate => ILateTickable<br>
+Unity Pause => IPausable<br>
 Unity Application.Quit => IDisposable
 
 ```c#
