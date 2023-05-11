@@ -2,20 +2,20 @@
   "name": "com.npg.bindlessdi",
   "displayName": "npg.bindlessdi",
   "description": "Lightweight dependency injection framework for Unity almost free of bindings",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "unity": "2019.3",
   "license": "MIT",
-  "licensesUrl": "https://github.com/no0bsprey/bindlessdi/blob/master/LICENSE.md",
-  "documentationUrl": "https://github.com/no0bsprey/bindlessdi/blob/master/README.md",
-  "changelogUrl": "https://github.com/no0bsprey/bindlessdi/releases",
+  "licensesUrl": "https://github.com/natpuncher/bindlessdi/blob/master/LICENSE.md",
+  "documentationUrl": "https://github.com/natpuncher/bindlessdi/blob/master/README.md",
+  "changelogUrl": "https://github.com/natpuncher/bindlessdi/releases",
   "repository": {
     "type": "git",
-    "url": "git+http://github.com/no0bsprey/bindlessdi.git"
+    "url": "git+http://github.com/natpuncher/bindlessdi.git"
   },
   "author": {
-    "name": "no0bsprey",
-    "email": "no0bs.prey@gmail.com",
-    "url": "https://github.com/no0bsprey"
+    "name": "nat.puncher",
+    "email": "nat.puncher@gmail.com",
+    "url": "https://github.com/natpuncher"
   },
   "dependencies": {},
   "keywords": [

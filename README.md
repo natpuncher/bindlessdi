@@ -1,23 +1,22 @@
 ![](https://img.shields.io/badge/unity-2019.3%20or%20later-green)
-[![](https://img.shields.io/github/license/no0bsprey/bindlessdi)](https://github.com/no0bsprey/bindlessdi/blob/master/LICENSE.md)
+[![](https://img.shields.io/github/license/natpuncher/bindlessdi)](https://github.com/natpuncher/bindlessdi/blob/master/LICENSE.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=flat-square)](https://makeapullrequest.com)
 
 bindlessdi
 ===
 
 Lightweight dependency injection framework for Unity almost free of bindings.
-**Only supports constructor injection.**
 
 * [Installation](#installation)
 * [Usage](#usage)
 
 ## Installation
-
-Find the `manifest.json` file in the Packages folder of your project and add the following line to dependencies section:
+* In **Package Manager** press `+`, select `Add package from git URL` and paste `https://github.com/natpuncher/bindlessdi.git` 
+* Or find the `manifest.json` file in the `Packages` folder of your project and add the following line to dependencies section:
 ```json
 {
  "dependencies": {
-    "com.npg.bindlessdi": "https://github.com/no0bsprey/bindlessdi.git",
+    "com.npg.bindlessdi": "https://github.com/natpuncher/bindlessdi.git",
  },
 }
 ```
