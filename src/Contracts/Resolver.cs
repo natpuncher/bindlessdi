@@ -16,12 +16,12 @@ namespace npg.bindlessdi.Contracts
 		private readonly Pool<InstanceBuffer> _instanceBufferPool = new Pool<InstanceBuffer>();
 
 		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache,
-			UnityEventsHandler unityEventsHandler)
+			UnityEventsHandler unityEventsHandler, ImplementationGuesser implementationGuesser)
 		{
 			_instantiationPolicyRegistry = instantiationPolicyRegistry;
 			_contractBinder = contractBinder;
 			_instanceCache = instanceCache;
-			_constructionInfoProvider = new ConstructionInfoProvider(_instanceCache, _contractBinder);
+			_constructionInfoProvider = new ConstructionInfoProvider(_instanceCache, _contractBinder, implementationGuesser);
 			_unityEventsHandler = unityEventsHandler;
 		}
 

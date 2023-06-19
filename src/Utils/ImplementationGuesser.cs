@@ -6,6 +6,8 @@ namespace npg.bindlessdi.Utils
 {
 	internal sealed class ImplementationGuesser : IDisposable
 	{
+		public bool IsCacheInitialized => _foundImplementations.Count != 0;
+		
 		private Dictionary<Type, List<Type>> _foundImplementations = new Dictionary<Type, List<Type>>();
 
 		public bool TryGuess(Type type, out Type implementationType)
@@ -16,10 +18,7 @@ namespace npg.bindlessdi.Utils
 				return false;
 			}
 
-			if (_foundImplementations.Count == 0)
-			{
-				InitializeImplementationCache();
-			}
+			WarmupImplementationCache();
 
 			if (_foundImplementations.TryGetValue(type, out var implementationTypes))
 			{
@@ -40,6 +39,16 @@ namespace npg.bindlessdi.Utils
 			return false;
 		}
 
+		public void WarmupImplementationCache()
+		{
+			if (IsCacheInitialized)
+			{
+				return;
+			}
+			
+			InitializeImplementationCache();
+		}
+		
 		public void Dispose()
 		{
 			_foundImplementations.Clear();

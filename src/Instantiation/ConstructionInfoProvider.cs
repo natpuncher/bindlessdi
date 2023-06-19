@@ -15,12 +15,13 @@ namespace npg.bindlessdi.Instantiation
 		private readonly Dictionary<Type, ConstructionInfo> _instantiationInfos = new Dictionary<Type, ConstructionInfo>();
 		private readonly FactoryTypeResolver _factoryTypeResolver = new FactoryTypeResolver();
 		private readonly CircularDependencyAnalyzer _circularDependencyAnalyzer = new CircularDependencyAnalyzer();
-		private readonly ImplementationGuesser _implementationGuesser = new ImplementationGuesser();
+		private readonly ImplementationGuesser _implementationGuesser;
 
-		public ConstructionInfoProvider(InstanceCache instanceCache, ContractBinder contractBinder)
+		public ConstructionInfoProvider(InstanceCache instanceCache, ContractBinder contractBinder, ImplementationGuesser implementationGuesser)
 		{
 			_instanceCache = instanceCache;
 			_contractBinder = contractBinder;
+			_implementationGuesser = implementationGuesser;
 		}
 
 		public bool TryGetInfo(Type type, out ConstructionInfo info)
@@ -31,24 +32,26 @@ namespace npg.bindlessdi.Instantiation
 
 		private bool TryGetInfoInternal(Type type, out ConstructionInfo info)
 		{
-			if (!_instantiationInfos.TryGetValue(type, out info))
+			if (_instantiationInfos.TryGetValue(type, out info))
 			{
-				if (!_circularDependencyAnalyzer.Validate(type))
-				{
-					Debug.LogError($"[bindlessdi] Circular dependency found!\n{_circularDependencyAnalyzer}");
-					info = null;
-					return false;
-				}
-
-				info = CreateInstantiationInfo(type);
-				if (info == null)
-				{
-					return false;
-				}
-
-				_instantiationInfos[type] = info;
-				_circularDependencyAnalyzer.ReleaseLast();
+				return true;
 			}
+			
+			if (!_circularDependencyAnalyzer.Validate(type))
+			{
+				Debug.LogError($"[bindlessdi] Circular dependency found!\n{_circularDependencyAnalyzer}");
+				info = null;
+				return false;
+			}
+
+			info = CreateInstantiationInfo(type);
+			if (info == null)
+			{
+				return false;
+			}
+
+			_instantiationInfos[type] = info;
+			_circularDependencyAnalyzer.ReleaseLast();
 
 			return true;
 		}
@@ -58,7 +61,6 @@ namespace npg.bindlessdi.Instantiation
 			_instantiationInfos?.Clear();
 			_constructionValidator?.Dispose();
 			_circularDependencyAnalyzer?.Dispose();
-			_implementationGuesser?.Dispose();
 		}
 
 		private ConstructionInfo CreateInstantiationInfo(Type type)
