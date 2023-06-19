@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using npg.bindlessdi.Contracts;
 using npg.bindlessdi.Instantiation;
 using npg.bindlessdi.UnityLayer;
+using npg.bindlessdi.Utils;
 
 namespace npg.bindlessdi
 {
@@ -14,13 +15,17 @@ namespace npg.bindlessdi
 		private readonly InstantiationPolicyRegistry _instantiationPolicyRegistry;
 		private readonly UnityObjectContainer _unityObjectContainer;
 		private readonly UnityEventsHandler _unityEventsHandler;
+		private readonly ImplementationGuesser _implementationGuesser;
 
 		public InstantiationPolicy DefaultInstantiationPolicy
 		{
 			get => _instantiationPolicyRegistry.DefaultPolicy;
 			set => _instantiationPolicyRegistry.DefaultPolicy = value;
 		}
-		
+
+		public bool IsImplementationCacheInitialized =>
+			_implementationGuesser != null && _implementationGuesser.IsCacheInitialized;
+
 		private static Container _instance;
 
 		public static Container Initialize(bool handleUnityEvents = true)
@@ -29,6 +34,7 @@ namespace npg.bindlessdi
 			{
 				_instance = new Container(handleUnityEvents);
 			}
+
 			return _instance;
 		}
 
@@ -37,21 +43,25 @@ namespace npg.bindlessdi
 			_instantiationPolicyRegistry = new InstantiationPolicyRegistry();
 			_contractBinder = new ContractBinder();
 			_instanceCache = new InstanceCache();
-			
+
 			if (handleUnityEvents)
 			{
 				_unityEventsHandler = new UnityEventsHandler();
 				_unityEventsHandler?.TryRegisterInstance(this);
 			}
-			
-			_resolver = new Resolver(_instantiationPolicyRegistry, _contractBinder, _instanceCache, _unityEventsHandler);
+
+			_implementationGuesser = new ImplementationGuesser();
+
+			_resolver = new Resolver(_instantiationPolicyRegistry, _contractBinder, _instanceCache, _unityEventsHandler,
+				_implementationGuesser);
 			BindInstance(_resolver);
-			
+
 			_unityObjectContainer = new UnityObjectContainer();
 			BindInstance(_unityObjectContainer);
 		}
 
-		public void BindImplementation<TInterface, TType>(InstantiationPolicy instantiationPolicy = InstantiationPolicy.Single) where TType : TInterface 
+		public void BindImplementation<TInterface, TType>(
+			InstantiationPolicy instantiationPolicy = InstantiationPolicy.Single) where TType : TInterface
 		{
 			_contractBinder.Bind<TInterface, TType>();
 			RegisterInstantiationPolicy<TType>(instantiationPolicy);
@@ -63,7 +73,7 @@ namespace npg.bindlessdi
 			{
 				return;
 			}
-			
+
 			_instanceCache.AddInstance(typeof(TType), instance);
 			_unityEventsHandler?.TryRegisterInstance(instance);
 		}
@@ -76,7 +86,7 @@ namespace npg.bindlessdi
 				{
 					continue;
 				}
-				
+
 				_instanceCache.AddInstance(instance.GetType(), instance);
 				_unityEventsHandler?.TryRegisterInstance(instance);
 			}
@@ -107,12 +117,18 @@ namespace npg.bindlessdi
 			return _resolver.Resolve(type, instantiationPolicy);
 		}
 
+		public void WarmupImplementationCache()
+		{
+			_implementationGuesser.WarmupImplementationCache();
+		}
+
 		public void Dispose()
 		{
 			_resolver?.Dispose();
 			_instantiationPolicyRegistry?.Dispose();
 			_contractBinder?.Dispose();
 			_instanceCache?.Dispose();
+			_implementationGuesser?.Dispose();
 			_unityObjectContainer?.Dispose();
 			_unityEventsHandler?.Dispose();
 			_instance = null;
