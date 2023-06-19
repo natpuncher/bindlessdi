@@ -9,7 +9,10 @@ namespace npg.bindlessdi.Instantiation
 
 		public object Construct(ConstructionInfo info, InstanceBuffer instanceBuffer)
 		{
-			return info.ConstructorInfo.Invoke(PrepareParameters(instanceBuffer));
+			var preparedParametersBuffer = PrepareParameters(instanceBuffer);
+			var instance = info.ConstructorInfo.Invoke(preparedParametersBuffer);
+			ClearBuffer(ref preparedParametersBuffer);
+			return instance;
 		}
 
 		public void Dispose()
@@ -32,6 +35,14 @@ namespace npg.bindlessdi.Instantiation
 			}
 
 			return buffer;
+		}
+
+		private void ClearBuffer(ref object[] preparedParametersBuffer)
+		{
+			for (var i = 0; i < preparedParametersBuffer.Length; i++)
+			{
+				preparedParametersBuffer[i] = null;
+			}
 		}
 	}
 }
