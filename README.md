@@ -5,7 +5,7 @@
 bindlessdi
 ===
 
-Lightweight dependency injection framework for Unity almost free of bindings.
+Lightweight dependency injection framework for Unity almost free of bindings designed to simplify and streamline the process of writing code.
 
 * [Installation](#installation)
 * [Usage](#usage)
@@ -30,6 +30,7 @@ Lightweight dependency injection framework for Unity almost free of bindings.
 * [Factory](#factory)
 * [Unity Objects](#working-with-unity-objects)
 * [Unity Events](#unity-events)
+* [Optimizations](#optimizations)
 * [Tests](#tests)
 
 ### Initializing the Container
@@ -374,6 +375,13 @@ public class MyGame : ITickable, IDisposable
     }
 }
 ```
+
+### Optimizations
+By default, **Bindlessdi** will search for certain types and cache their implementations whenever it needs to guess them, but this process can be optimized.
+ * By calling `Container.WarmupImplementationCache` behind the loading screen of your game. 
+ This will force **Bindlessdi** to collect and cache all needed information in the right time if you want to use **Bindlessdi** without bindings.
+ * Or by binding all of your implementations by calling `Container.BindImplementation`, 
+so there will be no need for **Bindlessdi** to find implementations by itself.
 
 ### Tests
 
