@@ -16,12 +16,12 @@ namespace npg.bindlessdi.Contracts
 		private readonly Pool<InstanceBuffer> _instanceBufferPool = new Pool<InstanceBuffer>();
 
 		public Resolver(InstantiationPolicyRegistry instantiationPolicyRegistry, ContractBinder contractBinder, InstanceCache instanceCache,
-			UnityEventsHandler unityEventsHandler)
+			UnityEventsHandler unityEventsHandler, ImplementationGuesser implementationGuesser)
 		{
 			_instantiationPolicyRegistry = instantiationPolicyRegistry;
 			_contractBinder = contractBinder;
 			_instanceCache = instanceCache;
-			_constructionInfoProvider = new ConstructionInfoProvider(_instanceCache, _contractBinder);
+			_constructionInfoProvider = new ConstructionInfoProvider(_instanceCache, _contractBinder, implementationGuesser);
 			_unityEventsHandler = unityEventsHandler;
 		}
 
@@ -60,25 +60,31 @@ namespace npg.bindlessdi.Contracts
 				{
 					if (!_instanceCache.TryGetInstance(targetType, out result))
 					{
-						result = CreateInstance(targetType);
+						result = CreateInstance(targetType, instantiationPolicy);
 						_instanceCache.AddInstance(targetType, result);
 					}
 					break;
 				}
 				case InstantiationPolicy.Transient:
-					result = CreateInstance(targetType);
+					result = CreateInstance(targetType, instantiationPolicy);
 					break;
 			}
 
 			return result;
 		}
 
-		private object CreateInstance(Type type)
+		private object CreateInstance(Type type, InstantiationPolicy instantiationPolicy)
 		{
 			var canBeResolved = _constructionInfoProvider.TryGetInfo(type, out var info);
 			if (!canBeResolved)
 			{
 				return null;
+			}
+
+			if (instantiationPolicy == InstantiationPolicy.Single &&
+			    _instanceCache.TryGetInstance(info.TargetType, out var result))
+			{
+				return result;
 			}
 			
 			var buffer = _instanceBufferPool.Get();
@@ -87,7 +93,7 @@ namespace npg.bindlessdi.Contracts
 				buffer.Add(Resolve(dependencyType));
 			}
 
-			var result = _instantiator.Construct(info, buffer);
+			result = _instantiator.Construct(info, buffer);
 			_unityEventsHandler?.TryRegisterInstance(result);
 			_instanceBufferPool.Return(buffer);
 			return result;
