@@ -24,13 +24,13 @@ namespace npg.bindlessdi.Utils
 			{
 				implementationType = implementationTypes[0];
 				Debug.LogWarning($"[bindlessdi] Implementation guessed {implementationType.FullName} : {type.FullName}");
-				
+
 				if (implementationTypes.Count > 1)
 				{
-					Debug.LogError($"[bindlessdi] Ambiguous implementations found for {type.FullName} -> ({string.Join(" | ", implementationTypes)}), " +
+					Debug.LogError($"[bindlessdi] Ambiguous implementations found for " +
+					               $"{type.FullName} -> ({string.Join(" | ", implementationTypes)}), " +
 					               $"intended implementation should be binded!");
 				}
-
 				return true;
 			}
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace npg.bindlessdi.UnityLayer
 {
@@ -10,7 +11,10 @@ namespace npg.bindlessdi.UnityLayer
 		private readonly List<ITickable> _tickables = new List<ITickable>();
 		private readonly List<ILateTickable> _lateTickables = new List<ILateTickable>();
 		private readonly List<IPausable> _pausables = new List<IPausable>();
-		private readonly List<IDisposable> _disposables = new List<IDisposable>();
+		
+		private readonly UnityEventsListener _unityEventsListener;
+
+		internal event Action Destroyed;
 
 		private int _fixTickablesCount;
 		private int _tickablesCount;
@@ -20,27 +24,22 @@ namespace npg.bindlessdi.UnityLayer
 		{
 			var listenerGameObject = new GameObject
 			{
-				name = "UnityEventsListener",
+				name = "[bindlessdi] UnityEventsListener",
 				hideFlags = HideFlags.HideInHierarchy
 			};
-			var listener = listenerGameObject.AddComponent<UnityEventsListener>();
-			UnityEngine.Object.DontDestroyOnLoad(listenerGameObject);
+			_unityEventsListener = listenerGameObject.AddComponent<UnityEventsListener>();
+			Object.DontDestroyOnLoad(listenerGameObject);
 			
-			listener.OnFixUpdated += OnFixUpdated;
-			listener.OnUpdated += OnUpdated;
-			listener.OnLateUpdated += OnLateUpdated;
-			listener.OnPause += OnPause;
-			listener.OnUnpause += OnUnpause;
-			listener.OnDestroyed += OnDestroyed;
+			_unityEventsListener.OnFixUpdated += OnFixUpdated;
+			_unityEventsListener.OnUpdated += OnUpdated;
+			_unityEventsListener.OnLateUpdated += OnLateUpdated;
+			_unityEventsListener.OnPause += OnPause;
+			_unityEventsListener.OnUnpause += OnUnpause;
+			_unityEventsListener.OnDestroyed += OnDestroyed;
 		}
 
 		public void TryRegisterInstance(object instance)
 		{
-			if (instance is IDisposable disposable)
-			{
-				_disposables.Add(disposable);
-			}
-			
 			if (instance is IFixedTickable fixedTickable)
 			{
 				_fixTickables.Add(fixedTickable);
@@ -68,14 +67,33 @@ namespace npg.bindlessdi.UnityLayer
 
 		public void Dispose()
 		{
+			Destroyed = null;
+			ClearEventListener();
+			
 			_fixTickables.Clear();
 			_tickables.Clear();
 			_lateTickables.Clear();
-			_disposables.Clear();
 			
 			_fixTickablesCount = 0;
 			_tickablesCount = 0;
 			_lateTickablesCount = 0;
+		}
+
+		private void ClearEventListener()
+		{
+			if (_unityEventsListener == null)
+			{
+				return;
+			}
+			
+			_unityEventsListener.OnFixUpdated -= OnFixUpdated;
+			_unityEventsListener.OnUpdated -= OnUpdated;
+			_unityEventsListener.OnLateUpdated -= OnLateUpdated;
+			_unityEventsListener.OnPause -= OnPause;
+			_unityEventsListener.OnUnpause -= OnUnpause;
+			_unityEventsListener.OnDestroyed -= OnDestroyed;
+			
+			Object.Destroy(_unityEventsListener.gameObject);
 		}
 
 		private void OnFixUpdated()
@@ -120,10 +138,7 @@ namespace npg.bindlessdi.UnityLayer
 
 		private void OnDestroyed()
 		{
-			for (var i = _disposables.Count - 1; i >= 0; i--)
-			{
-				_disposables[i]?.Dispose();
-			}
+			Destroyed?.Invoke();
 		}
 	}
 }

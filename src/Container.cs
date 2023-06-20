@@ -47,7 +47,8 @@ namespace npg.bindlessdi
 			if (handleUnityEvents)
 			{
 				_unityEventsHandler = new UnityEventsHandler();
-				_unityEventsHandler?.TryRegisterInstance(this);
+				_unityEventsHandler.Destroyed -= Dispose;
+				_unityEventsHandler.Destroyed += Dispose;
 			}
 
 			_implementationGuesser = new ImplementationGuesser();
@@ -124,6 +125,12 @@ namespace npg.bindlessdi
 
 		public void Dispose()
 		{
+			if (_instance == null)
+			{
+				return;
+			}
+			_instance = null;
+			
 			_resolver?.Dispose();
 			_instantiationPolicyRegistry?.Dispose();
 			_contractBinder?.Dispose();
@@ -131,7 +138,6 @@ namespace npg.bindlessdi
 			_implementationGuesser?.Dispose();
 			_unityObjectContainer?.Dispose();
 			_unityEventsHandler?.Dispose();
-			_instance = null;
 		}
 	}
 }
