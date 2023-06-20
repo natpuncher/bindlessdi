@@ -73,7 +73,32 @@ namespace npg.bindlessdi.tests
 			container.Dispose();
 		}
 
+		[Test]
+		public void InstantiationPolicyByBaseTypeTest()
+		{
+			var container = Container.Initialize(false);
+			
+			container.RegisterInstantiationPolicy<I>(InstantiationPolicy.Transient);
+			var b = container.Resolve<B>();
+			var b2 = container.Resolve<B>();
+			var b3 = container.Resolve<I>();
+			
+			Assert.AreNotEqual(b, b2);
+			Assert.AreNotEqual(b2, b3);
+			Assert.AreNotEqual(b3, b);
+			
+			container.Dispose();
+		}
+
 		public class A
+		{
+		}
+
+		public interface I
+		{
+		}
+
+		public class B : I
 		{
 		}
 	}
